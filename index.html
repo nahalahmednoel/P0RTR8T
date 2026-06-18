@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P0RTR8T Whitelist</title>
+    <title>P0RTR8T — Whitelist</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Delius&display=swap" rel="stylesheet">
@@ -355,7 +355,7 @@
     </div>
 
     <script>
-        const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbw0o5MXtnTFPkH0xsHh0I7L-ZUvefD6zQGPIvSiAWwEOYAxba_Sf13qPtX8NTXbaPHpCg/exec";
+        const GOOGLE_SCRIPT_API_URL = "এখানে_আপনার_গুগল_স্ক্রিপ্ট_লিংক_টি_বসাবেন";
 
         const nftImages = [
             "https://i.ibb.co.com/5XzwpMMS/42.jpg",
@@ -412,8 +412,8 @@
 
         function checkLocalStorage() {
             if (localStorage.getItem('p0rtr8t_registered') === 'true') {
-                state.username = localStorage.getItem('p0rtr8t_username');
-                state.wallet = localStorage.getItem('p0rtr8t_wallet');
+                state.username = localStorage.getItem('p0rtr8t_username') || "User";
+                state.wallet = localStorage.getItem('p0rtr8t_wallet') || "0x00";
                 state.entryNum = localStorage.getItem('p0rtr8t_entryNum') || "001";
                 state.selectedImg = localStorage.getItem('p0rtr8t_img') || nftImages[0];
                 renderPremiumCard();
@@ -620,7 +620,7 @@
                 ctx.lineTo(rectX + rectW, rectY + rectH - radius);
                 ctx.quadraticCurveTo(rectX + rectW, rectY + rectH, rectX + rectW - radius, rectY + rectH);
                 ctx.lineTo(rectX + radius, rectY + rectH);
-                ctx.quadraticCurveTo(rectX, rectY + rectH, rectX, rectY + hexRadius || rectY + rectH - radius);
+                ctx.quadraticCurveTo(rectX, rectY + rectH, rectX, rectY + rectH - radius);
                 ctx.lineTo(rectX, rectY + radius);
                 ctx.quadraticCurveTo(rectX, rectY, rectX + radius, rectY);
                 ctx.closePath();
@@ -661,7 +661,7 @@
 
         function shareOnX() {
             const rawMessage = `I just joined the P0RTR8T whitelist.\nEntry #${state.entryNum}\nSee you on Ethereum.\n@P0RTR8T\nportr8t.xyz`;
-            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(rawMessage)}`, '_blank');
+            window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(rawMessage)}`, '_blank');
         }
 
         function downloadCard() {
