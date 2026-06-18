@@ -355,7 +355,7 @@
     </div>
 
     <script>
-        const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbwZSwEqy2G4oq_r8HLXME_KCDb4x2aIM6thHG1WG2MFbHE4AvLqbrF3sx5NOlnHyUQR6w/exec";
+        const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbz-gfdIHSG_dT7jMg_fKkL78-FftDvXf-PVOhQCEfVHkIr5tfHPyE3lBJRacE6vivNWGw/exec";
 
         const nftImages = [
             "https://i.ibb.co.com/5XzwpMMS/42.jpg",
@@ -375,7 +375,7 @@
             task2Done: false,
             task3Done: false,
             task4Done: false,
-            entryNum: "042",
+            entryNum: "001",
             selectedImg: ""
         };
 
@@ -414,7 +414,7 @@
             if (localStorage.getItem('p0rtr8t_registered') === 'true') {
                 state.username = localStorage.getItem('p0rtr8t_username');
                 state.wallet = localStorage.getItem('p0rtr8t_wallet');
-                state.entryNum = localStorage.getItem('p0rtr8t_entryNum') || "042";
+                state.entryNum = localStorage.getItem('p0rtr8t_entryNum') || "001";
                 state.selectedImg = localStorage.getItem('p0rtr8t_img') || nftImages[0];
                 renderPremiumCard();
                 switchView('viewCard');
@@ -502,7 +502,6 @@
             state.wallet = walletInput;
             
             switchView('viewLoading');
-
             sendDataToGoogleSheets();
         }
 
@@ -515,14 +514,23 @@
 
             fetch(GOOGLE_SCRIPT_API_URL, {
                 method: "POST",
-                mode: "no-cors",
+                mode: "cors",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "text/plain;charset=utf-8"
                 },
                 body: JSON.stringify(payload)
             })
-            .then(() => {
-                finalizeSubmission();
+            .then(res => res.json())
+            .then(resData => {
+                if (resData.status === "duplicate") {
+                    alert("Submission Rejected: This Username or Wallet Address is already registered.");
+                    switchView('viewTasks');
+                } else if (resData.status === "success") {
+                    state.entryNum = resData.entry; 
+                    finalizeSubmission();
+                } else {
+                    finalizeSubmission();
+                }
             })
             .catch(() => {
                 finalizeSubmission();
@@ -648,7 +656,7 @@
         }
 
         function shareOnX() {
-            const rawMessage = `I just joined the P0RTR8T whitelist.\nEntry #${state.entryNum}\nSee you on Ethereum.\n@P0RTR8T\np0rtr8t.xyz`;
+            const rawMessage = `I just joined the P0RTR8T whitelist.\nEntry #${state.entryNum}\nSee you on Ethereum.\n@P0RTR8T\nportr8t.xyz`;
             window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(rawMessage)}`, '_blank');
         }
 
