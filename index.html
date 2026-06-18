@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P0RTR8T — Whitelist</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Delius&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #faf8f5;
+            --primary: #000000;
+            --secondary: #ffffff;
+            --font-fine: 'Delius', cursive;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-fine);
+            color: var(--primary);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bg-layer {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.25;
+            overflow: hidden;
+        }
+
+        .bg-layer-2 {
+            opacity: 0.15;
+            animation-duration: 35s !important;
+            transform: scale(0.8);
+        }
+
+        .floating-avatar {
+            position: absolute;
+            width: 65px;
+            height: 65px;
+            border-radius: 20px;
+            border: 2px solid var(--primary);
+            background-size: cover;
+            background-position: center;
+            box-shadow: 2px 2px 0px var(--primary);
+            animation: moveDiagonal 22s linear infinite;
+        }
+
+        @keyframes moveDiagonal {
+            0% { transform: translate(75vw, -20vh) rotate(0deg); }
+            100% { transform: translate(-20vw, 110vh) rotate(360deg); }
+        }
+
+        .app-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 460px;
+            padding: 24px;
+            margin: 40px auto;
+        }
+
+        .card-view {
+            background: var(--secondary);
+            border: 2px solid var(--primary);
+            border-radius: 32px;
+            padding: 40px 30px;
+            box-shadow: 6px 6px 0px var(--primary);
+            transition: all 0.4s ease;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        h1.logo {
+            font-size: 3rem;
+            letter-spacing: 6px;
+            margin-bottom: 4px;
+            font-weight: 400;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.7;
+            margin-bottom: 30px;
+        }
+
+        .welcome-text {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 35px;
+        }
+
+        .btn {
+            background: var(--secondary);
+            border: 2px solid var(--primary);
+            padding: 14px 32px;
+            font-size: 1.2rem;
+            border-radius: 16px;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px var(--primary);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px var(--primary);
+        }
+
+        .btn:disabled {
+            background: #f0f0f0;
+            border-color: #888888;
+            color: #888888;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .task-list {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .task-item {
+            background: #ffffff;
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .task-title {
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            background: #ffffff;
+        }
+
+        .status-dot.done {
+            background: #000000;
+        }
+
+        .task-expanded {
+            margin-top: 15px;
+            border-top: 1px dashed #000000;
+            padding-top: 15px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: #ffffff;
+            outline: none;
+            margin-bottom: 12px;
+        }
+
+        .mini-btn {
+            padding: 8px 18px;
+            font-size: 0.95rem;
+            border-radius: 10px;
+            box-shadow: 2px 2px 0px var(--primary);
+            width: auto;
+        }
+
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            padding: 20px 0;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-msg {
+            color: #ff0000;
+            font-size: 0.9rem;
+            margin-top: -6px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        #canvasContainer {
+            margin: 20px auto;
+            max-width: 100%;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        #resultCanvas {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .share-actions {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-layer" id="bgLayer1"></div>
+    <div class="bg-layer bg-layer-2" id="bgLayer2"></div>
+
+    <div class="app-container">
+        
+        <div id="viewLanding" class="card-view">
+            <h1 class="logo">P0RTR8T</h1>
+            <div class="subtitle">333 Unique Portraits On Ethereum</div>
+            <p class="welcome-text">
+                Welcome to the collection space. Entry guarantees processing inside our dynamic collectible directory. Complete your setup items to print your verified access ticket.
+            </p>
+            <button class="btn" onclick="switchView('viewTasks')">Join Whitelist</button>
+        </div>
+
+        <div id="viewTasks" class="card-view hidden">
+            <h1 class="logo" style="font-size: 2rem;">TASKS</h1>
+            <div class="subtitle" style="margin-bottom: 20px;">Complete all milestones</div>
+            
+            <div class="task-list">
+                <div class="task-item" id="task1">
+                    <div class="task-header">
+                        <div class="task-title"><span class="status-dot" id="dot1"></span> 1. Follow on X</div>
+                        <button class="btn mini-btn" id="btnAction1" onclick="handleTask1Action()">Follow</button>
+                    </div>
+                    <div class="task-expanded hidden" id="exp1">
+                        <input type="text" id="inputXUser" placeholder="Enter your X username">
+                        <button class="btn mini-btn" onclick="submitTask1()">Submit Username</button>
+                    </div>
+                    <div class="task-expanded hidden" id="load1">
+                        <div class="loader-container"><div class="spinner"></div><p>Checking Follow...</p></div>
+                    </div>
+                </div>
+
+                <div class="task-item" id="task2">
+                    <div class="task-header">
+                        <div class="task-title"><span class="status-dot" id="dot2"></span> 2. Like Post</div>
+                        <button class="btn mini-btn" id="btnAction2" onclick="completeTask2()" disabled>Like</button>
+                    </div>
+                </div>
+
+                <div class="task-item" id="task3">
+                    <div class="task-header">
+                        <div class="task-title"><span class="status-dot" id="dot3"></span> 3. Repost Post</div>
+                        <button class="btn mini-btn" id="btnAction3" onclick="completeTask3()" disabled>Repost</button>
+                    </div>
+                </div>
+
+                <div class="task-item" id="task4">
+                    <div class="task-header">
+                        <div class="task-title"><span class="status-dot" id="dot4"></span> 4. Comment On Post</div>
+                        <button class="btn mini-btn" id="btnAction4" onclick="handleTask4Action()" disabled>Comment</button>
+                    </div>
+                    <div class="task-expanded hidden" id="exp4">
+                        <input type="text" id="inputXComment" placeholder="https://x.com/.../status/...">
+                        <div class="error-msg hidden" id="err4">Please enter a valid x.com comment link.</div>
+                        <button class="btn mini-btn" onclick="submitTask4()">Verify Comment</button>
+                    </div>
+                    <div class="task-expanded hidden" id="load4">
+                        <div class="loader-container"><div class="spinner"></div><p>Verifying submission context...</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="walletSection" class="hidden" style="margin-top: 25px; border-top: 2px solid var(--primary); padding-top: 20px;">
+                <input type="text" id="inputWallet" placeholder="0x...">
+                <div class="error-msg hidden" id="errWallet">Please input a correct Ethereum structural wallet layout.</div>
+                <button class="btn" id="btnWalletVerify" onclick="processWalletVerification()">Verify Wallet</button>
+            </div>
+        </div>
+
+        <div id="viewLoading" class="card-view hidden">
+            <div class="loader-container" style="padding: 40px 0;">
+                <div class="spinner" style="width: 60px; height: 60px;"></div>
+                <h2 style="font-weight: 400; margin-top: 15px;">Validating Credentials</h2>
+                <p style="opacity: 0.7;">Securing your slot across distribution logs...</p>
+            </div>
+        </div>
+
+        <div id="viewCard" class="card-view hidden">
+            <h1 class="logo" style="font-size: 2.2rem;">COLLECTIBLE</h1>
+            <div class="subtitle" style="margin-bottom: 15px;">Your verified slot access key</div>
+            
+            <div id="canvasContainer">
+                <canvas id="resultCanvas" width="600" height="840"></canvas>
+            </div>
+
+            <div class="share-actions">
+                <button class="btn" onclick="shareOnX()">Share On X</button>
+                <button class="btn" onclick="downloadCard()">Download Card</button>
+                <button class="btn" onclick="copyCard()">Copy Card Image</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbwZSwEqy2G4oq_r8HLXME_KCDb4x2aIM6thHG1WG2MFbHE4AvLqbrF3sx5NOlnHyUQR6w/exec";
+
+        const nftImages = [
+            "https://i.ibb.co.com/5XzwpMMS/42.jpg",
+            "https://i.ibb.co.com/S4NdcHgT/33.jpg",
+            "https://i.ibb.co.com/q3vWkJTG/54.jpg",
+            "https://i.ibb.co.com/mCGHVLDq/36.jpg",
+            "https://i.ibb.co.com/1txMNzTN/140.jpg",
+            "https://i.ibb.co.com/4RtNYtLY/162.jpg",
+            "https://i.ibb.co.com/4ZCsgfqR/149.jpg"
+        ];
+
+        let state = {
+            username: "",
+            commentUrl: "",
+            wallet: "",
+            task1Done: false,
+            task2Done: false,
+            task3Done: false,
+            task4Done: false,
+            entryNum: "042",
+            selectedImg: ""
+        };
+
+        function initBackground() {
+            const layers = [document.getElementById('bgLayer1'), document.getElementById('bgLayer2')];
+            layers.forEach((layer, lIdx) => {
+                const count = lIdx === 0 ? 12 : 8;
+                for(let i=0; i<count; i++) {
+                    let avatar = document.createElement('div');
+                    avatar.className = 'floating-avatar';
+                    avatar.style.top = Math.random() * 100 + "vh";
+                    avatar.style.left = Math.random() * 100 + "vw";
+                    avatar.style.animationDelay = (Math.random() * -20) + "s";
+                    
+                    const randomImg = nftImages[Math.floor(Math.random() * nftImages.length)];
+                    avatar.style.backgroundImage = `url('${randomImg}')`;
+                    layer.appendChild(avatar);
+                }
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initBackground();
+            state.selectedImg = nftImages[Math.floor(Math.random() * nftImages.length)];
+            checkLocalStorage();
+        });
+
+        function switchView(viewId) {
+            ['viewLanding', 'viewTasks', 'viewLoading', 'viewCard'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(viewId).classList.remove('hidden');
+        }
+
+        function checkLocalStorage() {
+            if (localStorage.getItem('p0rtr8t_registered') === 'true') {
+                state.username = localStorage.getItem('p0rtr8t_username');
+                state.wallet = localStorage.getItem('p0rtr8t_wallet');
+                state.entryNum = localStorage.getItem('p0rtr8t_entryNum') || "042";
+                state.selectedImg = localStorage.getItem('p0rtr8t_img') || nftImages[0];
+                renderPremiumCard();
+                switchView('viewCard');
+            }
+        }
+
+        function handleTask1Action() {
+            window.open('https://x.com', '_blank');
+            document.getElementById('exp1').classList.remove('hidden');
+            document.getElementById('btnAction1').classList.add('hidden');
+        }
+
+        function submitTask1() {
+            const user = document.getElementById('inputXUser').value.trim();
+            if(!user) return;
+            state.username = user.replace('@', '');
+            document.getElementById('exp1').classList.add('hidden');
+            document.getElementById('load1').classList.remove('hidden');
+            
+            setTimeout(() => {
+                document.getElementById('load1').classList.add('hidden');
+                state.task1Done = true;
+                document.getElementById('dot1').classList.add('done');
+                document.getElementById('btnAction2').disabled = false;
+            }, 2000);
+        }
+
+        function completeTask2() {
+            if(!state.task1Done) return;
+            window.open('https://x.com', '_blank');
+            state.task2Done = true;
+            document.getElementById('dot2').classList.add('done');
+            document.getElementById('btnAction2').disabled = true;
+            document.getElementById('btnAction3').disabled = false;
+        }
+
+        function completeTask3() {
+            if(!state.task2Done) return;
+            window.open('https://x.com', '_blank');
+            state.task3Done = true;
+            document.getElementById('dot3').classList.add('done');
+            document.getElementById('btnAction3').disabled = true;
+            document.getElementById('btnAction4').disabled = false;
+        }
+
+        function handleTask4Action() {
+            if(!state.task3Done) return;
+            window.open('https://x.com', '_blank');
+            document.getElementById('exp4').classList.remove('hidden');
+        }
+
+        function submitTask4() {
+            const url = document.getElementById('inputXComment').value.trim();
+            const regex = /^(https?:\/\/)?(www\.)?(x|twitter)\.com\/[a-zA-Z0-9_]+\/status\/[0-9]+/;
+            
+            if(!regex.test(url)) {
+                document.getElementById('err4').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('err4').classList.add('hidden');
+            document.getElementById('exp4').classList.add('hidden');
+            document.getElementById('load4').classList.remove('hidden');
+
+            setTimeout(() => {
+                document.getElementById('load4').classList.add('hidden');
+                state.task4Done = true;
+                state.commentUrl = url;
+                document.getElementById('dot4').classList.add('done');
+                document.getElementById('btnAction4').classList.add('hidden');
+                document.getElementById('walletSection').classList.remove('hidden');
+            }, 2500);
+        }
+
+        function processWalletVerification() {
+            if(!(state.task1Done && state.task2Done && state.task3Done && state.task4Done)) return;
+            
+            const walletInput = document.getElementById('inputWallet').value.trim();
+            const ethRegex = /^0x[a-fA-F0-9]{40}$/;
+
+            if(!ethRegex.test(walletInput)) {
+                document.getElementById('errWallet').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('errWallet').classList.add('hidden');
+            state.wallet = walletInput;
+            
+            switchView('viewLoading');
+
+            sendDataToGoogleSheets();
+        }
+
+        function sendDataToGoogleSheets() {
+            const payload = {
+                username: state.username,
+                commentUrl: state.commentUrl,
+                wallet: state.wallet
+            };
+
+            fetch(GOOGLE_SCRIPT_API_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                finalizeSubmission();
+            })
+            .catch(() => {
+                finalizeSubmission();
+            });
+        }
+
+        function finalizeSubmission() {
+            localStorage.setItem('p0rtr8t_registered', 'true');
+            localStorage.setItem('p0rtr8t_username', state.username);
+            localStorage.setItem('p0rtr8t_wallet', state.wallet);
+            localStorage.setItem('p0rtr8t_entryNum', state.entryNum);
+            localStorage.setItem('p0rtr8t_img', state.selectedImg);
+
+            renderPremiumCard();
+            switchView('viewCard');
+        }
+
+        function renderPremiumCard() {
+            const canvas = document.getElementById('resultCanvas');
+            const ctx = canvas.getContext('2d');
+
+            let gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#ffd6e0');   
+            gradient.addColorStop(0.5, '#fbf7db'); 
+            gradient.addColorStop(1, '#cecfe2');   
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.lineWidth = 3;
+            for(let i = -canvas.width; i < canvas.width; i += 40) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i + canvas.height, canvas.height);
+                ctx.stroke();
+            }
+
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 6;
+            ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+
+            ctx.lineWidth = 2;
+            ctx.strokeRect(28, 28, canvas.width - 56, canvas.height - 56);
+
+            ctx.fillStyle = '#000000';
+            ctx.font = "normal 38px 'Delius', sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("P0RTR8T", canvas.width / 2, 85);
+
+            const imgObj = new Image();
+            imgObj.crossOrigin = "anonymous";
+            imgObj.src = state.selectedImg;
+            imgObj.onload = function() {
+                const rectX = canvas.width / 2 - 160;
+                const rectY = 140;
+                const rectW = 320;
+                const rectH = 320;
+                const radius = 24;
+
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(rectX + radius, rectY);
+                ctx.lineTo(rectX + rectW - radius, rectY);
+                ctx.quadraticCurveTo(rectX + rectW, rectY, rectX + rectW, rectY + radius);
+                ctx.lineTo(rectX + rectW, rectY + rectH - radius);
+                ctx.quadraticCurveTo(rectX + rectW, rectY + rectH, rectX + rectW - radius, rectY + rectH);
+                ctx.lineTo(rectX + radius, rectY + rectH);
+                ctx.quadraticCurveTo(rectX, rectY + rectH, rectX, rectY + rectH - radius);
+                ctx.lineTo(rectX, rectY + radius);
+                ctx.quadraticCurveTo(rectX, rectY, rectX + radius, rectY);
+                ctx.closePath();
+                ctx.clip();
+                
+                ctx.drawImage(imgObj, rectX, rectY, rectW, rectH);
+                ctx.restore();
+
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.moveTo(rectX + radius, rectY);
+                ctx.lineTo(rectX + rectW - radius, rectY);
+                ctx.quadraticCurveTo(rectX + rectW, rectY, rectX + rectW, rectY + radius);
+                ctx.lineTo(rectX + rectW, rectY + rectH - radius);
+                ctx.quadraticCurveTo(rectX + rectW, rectY + rectH, rectX + rectW - radius, rectY + rectH);
+                ctx.lineTo(rectX + radius, rectY + rectH);
+                ctx.quadraticCurveTo(rectX, rectY + rectH, rectX, rectY + rectH - radius);
+                ctx.lineTo(rectX, rectY + radius);
+                ctx.quadraticCurveTo(rectX, rectY, rectX + radius, rectY);
+                ctx.closePath();
+                ctx.stroke();
+
+                drawCardTextAndStamp(ctx, canvas);
+            };
+        }
+
+        function drawCardTextAndStamp(ctx, canvas) {
+            ctx.fillStyle = '#000000';
+            ctx.font = "normal 32px 'Delius', sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("@" + state.username, canvas.width / 2, 530);
+            
+            ctx.font = "normal 26px 'Delius', sans-serif";
+            ctx.fillText("Entry #" + state.entryNum, canvas.width / 2, 580);
+
+            ctx.save();
+            ctx.translate(canvas.width / 2, 670);
+            ctx.rotate(-0.08);
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 4;
+            ctx.strokeRect(-110, -35, 220, 70);
+            
+            ctx.fillStyle = '#000000';
+            ctx.font = "normal 30px 'Delius', sans-serif";
+            ctx.fillText("VERIFIED", 0, 10);
+            ctx.restore();
+
+            ctx.font = "normal 24px 'Delius', sans-serif";
+            ctx.textAlign = "left";
+            ctx.fillText("Supply: 333", 55, canvas.height - 65);
+            
+            ctx.textAlign = "right";
+            ctx.fillText("Ethereum", canvas.width - 55, canvas.height - 65);
+        }
+
+        function shareOnX() {
+            const rawMessage = `I just joined the P0RTR8T whitelist.\nEntry #${state.entryNum}\nSee you on Ethereum.\n@P0RTR8T\np0rtr8t.xyz`;
+            window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(rawMessage)}`, '_blank');
+        }
+
+        function downloadCard() {
+            const canvas = document.getElementById('resultCanvas');
+            const link = document.createElement('a');
+            link.download = `P0RTR8T_Entry_${state.entryNum}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function copyCard() {
+            const canvas = document.getElementById('resultCanvas');
+            canvas.toBlob(blob => {
+                navigator.clipboard.write([
+                    new ClipboardItem({ "image/png": blob })
+                ]).then(() => alert("Premium trading card copied to clipboard!"))
+                  .catch(() => alert("Copying failed. Please download the card instead."));
+            }, 'image/png');
+        }
+    </script>
+</body>
+</html>
