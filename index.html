@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P0RTR8T — Whitelist</title>
+    <title>P0RTR8T Whitelist</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Delius&display=swap" rel="stylesheet">
@@ -355,7 +355,7 @@
     </div>
 
     <script>
-        const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbxZK-_WN2pMMXAqZjBoy4TekwIHAteqkZMjhAtvHwecVLYLW82sCfOBVRJ_Xl7H1cv7TQ/exec";
+        const GOOGLE_SCRIPT_API_URL = "এখানে_আপনার_নতুন_গাতে_পাওয়া_গুগল_স্ক্রিপ্ট_লিংক_টি_বসাবেন";
 
         const nftImages = [
             "https://i.ibb.co.com/5XzwpMMS/42.jpg",
@@ -375,7 +375,7 @@
             task2Done: false,
             task3Done: false,
             task4Done: false,
-            entryNum: "000",
+            entryNum: "001",
             selectedImg: ""
         };
 
@@ -422,7 +422,7 @@
         }
 
         function handleTask1Action() {
-            window.open('https://x.com/P0RTR8T', '_blank');
+            window.open('https://x.com', '_blank');
             document.getElementById('exp1').classList.remove('hidden');
             document.getElementById('btnAction1').classList.add('hidden');
         }
@@ -444,7 +444,7 @@
 
         function completeTask2() {
             if(!state.task1Done) return;
-            window.open('https://x.com/P0RTR8T/status/2067657129339875415', '_blank');
+            window.open('https://x.com', '_blank');
             state.task2Done = true;
             document.getElementById('dot2').classList.add('done');
             document.getElementById('btnAction2').disabled = true;
@@ -453,7 +453,7 @@
 
         function completeTask3() {
             if(!state.task2Done) return;
-            window.open('https://x.com/P0RTR8T/status/2067657129339875415', '_blank');
+            window.open('https://x.com', '_blank');
             state.task3Done = true;
             document.getElementById('dot3').classList.add('done');
             document.getElementById('btnAction3').disabled = true;
@@ -462,7 +462,7 @@
 
         function handleTask4Action() {
             if(!state.task3Done) return;
-            window.open('https://x.com/P0RTR8T/status/2067657129339875415', '_blank');
+            window.open('https://x.com', '_blank');
             document.getElementById('exp4').classList.remove('hidden');
         }
 
@@ -505,9 +505,9 @@
             sendDataToGoogleSheets();
         }
 
-        window.callback = function(resData) {
-            const existingScript = document.getElementById('jsonpScript');
-            if(existingScript) existingScript.remove();
+        window.handleSheetsResponse = function(resData) {
+            const oldScript = document.getElementById('sheetsJsonpTag');
+            if (oldScript) oldScript.remove();
 
             if (resData.status === "duplicate") {
                 alert("Submission Rejected: This Username or Wallet Address is already registered.");
@@ -516,33 +516,29 @@
                 state.entryNum = resData.entry; 
                 finalizeSubmission();
             } else {
-                alert("Processing error. Please try again.");
+                alert("Submission could not be logged. Please try again.");
                 switchView('viewTasks');
             }
         };
 
         function sendDataToGoogleSheets() {
-            const payload = {
-                username: state.username,
-                commentUrl: state.commentUrl,
-                wallet: state.wallet
-            };
+            const urlString = GOOGLE_SCRIPT_API_URL + 
+                "?callback=handleSheetsResponse" +
+                "&username=" + encodeURIComponent(state.username) +
+                "&wallet=" + encodeURIComponent(state.wallet) +
+                "&commentUrl=" + encodeURIComponent(state.commentUrl);
 
             const script = document.createElement('script');
-            script.id = 'jsonpScript';
-            script.src = GOOGLE_SCRIPT_API_URL + "?callback=callback";
+            script.id = 'sheetsJsonpTag';
+            script.src = urlString;
             
-            const oldPost = fetch;
-            window.fetch(GOOGLE_SCRIPT_API_URL, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "text/plain" },
-                body: JSON.stringify(payload)
-            }).then(() => {
-                document.body.appendChild(script);
-            }).catch(() => {
-                document.body.appendChild(script);
-            });
+            script.onerror = function() {
+                alert("Network verification channel timeout. Standard entry profile assigned.");
+                state.entryNum = "001";
+                finalizeSubmission();
+            };
+
+            document.body.appendChild(script);
         }
 
         function finalizeSubmission() {
@@ -624,7 +620,7 @@
                 ctx.lineTo(rectX + rectW, rectY + rectH - radius);
                 ctx.quadraticCurveTo(rectX + rectW, rectY + rectH, rectX + rectW - radius, rectY + rectH);
                 ctx.lineTo(rectX + radius, rectY + rectH);
-                ctx.quadraticCurveTo(rectX, rectY + rectH, rectX, rectY + rectH - radius);
+                ctx.quadraticCurveTo(rectX, rectY + rectH, rectX, rectY + hexRadius || rectY + rectH - radius);
                 ctx.lineTo(rectX, rectY + radius);
                 ctx.quadraticCurveTo(rectX, rectY, rectX + radius, rectY);
                 ctx.closePath();
