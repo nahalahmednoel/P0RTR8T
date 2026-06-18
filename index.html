@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P0RTR8T Whitelist</title>
+    <title>P0RTR8T — Whitelist</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Delius&display=swap" rel="stylesheet">
@@ -355,7 +355,7 @@
     </div>
 
     <script>
-        const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbz-gfdIHSG_dT7jMg_fKkL78-FftDvXf-PVOhQCEfVHkIr5tfHPyE3lBJRacE6vivNWGw/exec";
+        const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbxZK-_WN2pMMXAqZjBoy4TekwIHAteqkZMjhAtvHwecVLYLW82sCfOBVRJ_Xl7H1cv7TQ/exec";
 
         const nftImages = [
             "https://i.ibb.co.com/5XzwpMMS/42.jpg",
@@ -375,7 +375,7 @@
             task2Done: false,
             task3Done: false,
             task4Done: false,
-            entryNum: "001",
+            entryNum: "000",
             selectedImg: ""
         };
 
@@ -505,6 +505,22 @@
             sendDataToGoogleSheets();
         }
 
+        window.callback = function(resData) {
+            const existingScript = document.getElementById('jsonpScript');
+            if(existingScript) existingScript.remove();
+
+            if (resData.status === "duplicate") {
+                alert("Submission Rejected: This Username or Wallet Address is already registered.");
+                switchView('viewTasks');
+            } else if (resData.status === "success") {
+                state.entryNum = resData.entry; 
+                finalizeSubmission();
+            } else {
+                alert("Processing error. Please try again.");
+                switchView('viewTasks');
+            }
+        };
+
         function sendDataToGoogleSheets() {
             const payload = {
                 username: state.username,
@@ -512,28 +528,20 @@
                 wallet: state.wallet
             };
 
-            fetch(GOOGLE_SCRIPT_API_URL, {
+            const script = document.createElement('script');
+            script.id = 'jsonpScript';
+            script.src = GOOGLE_SCRIPT_API_URL + "?callback=callback";
+            
+            const oldPost = fetch;
+            window.fetch(GOOGLE_SCRIPT_API_URL, {
                 method: "POST",
-                mode: "cors",
-                headers: {
-                    "Content-Type": "text/plain;charset=utf-8"
-                },
+                mode: "no-cors",
+                headers: { "Content-Type": "text/plain" },
                 body: JSON.stringify(payload)
-            })
-            .then(res => res.json())
-            .then(resData => {
-                if (resData.status === "duplicate") {
-                    alert("Submission Rejected: This Username or Wallet Address is already registered.");
-                    switchView('viewTasks');
-                } else if (resData.status === "success") {
-                    state.entryNum = resData.entry; 
-                    finalizeSubmission();
-                } else {
-                    finalizeSubmission();
-                }
-            })
-            .catch(() => {
-                finalizeSubmission();
+            }).then(() => {
+                document.body.appendChild(script);
+            }).catch(() => {
+                document.body.appendChild(script);
             });
         }
 
@@ -657,7 +665,7 @@
 
         function shareOnX() {
             const rawMessage = `I just joined the P0RTR8T whitelist.\nEntry #${state.entryNum}\nSee you on Ethereum.\n@P0RTR8T\nportr8t.xyz`;
-            window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(rawMessage)}`, '_blank');
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(rawMessage)}`, '_blank');
         }
 
         function downloadCard() {
