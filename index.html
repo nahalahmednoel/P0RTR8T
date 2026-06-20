@@ -48,7 +48,7 @@
 
         .bg-layer-2 {
             opacity: 0.15;
-            animation-duration: 35s !important;
+            animation-duration: 35s;
             transform: scale(0.8);
         }
 
@@ -367,6 +367,11 @@
             "https://i.ibb.co.com/4ZCsgfqR/149.jpg"
         ];
 
+        const customCards = [
+            "https://i.ibb.co.com/h1gtTY3P/FARU2.jpg",
+            "https://i.ibb.co.com/Kxkc8j36/FARU1.jpg"
+        ];
+
         let state = {
             username: "",
             commentUrl: "",
@@ -376,7 +381,8 @@
             task3Done: false,
             task4Done: false,
             entryNum: "001",
-            selectedImg: ""
+            selectedImg: "",
+            selectedCustomCard: ""
         };
 
         function initBackground() {
@@ -400,6 +406,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             initBackground();
             state.selectedImg = nftImages[Math.floor(Math.random() * nftImages.length)];
+            state.selectedCustomCard = customCards[Math.floor(Math.random() * customCards.length)];
             checkLocalStorage();
         });
 
@@ -415,7 +422,7 @@
                 state.username = localStorage.getItem('p0rtr8t_username') || "User";
                 state.wallet = localStorage.getItem('p0rtr8t_wallet') || "0x00";
                 state.entryNum = localStorage.getItem('p0rtr8t_entryNum') || "001";
-                state.selectedImg = localStorage.getItem('p0rtr8t_img') || nftImages[0];
+                state.selectedCustomCard = localStorage.getItem('p0rtr8t_customCard') || customCards[0];
                 renderPremiumCard();
                 switchView('viewCard');
             }
@@ -546,7 +553,7 @@
             localStorage.setItem('p0rtr8t_username', state.username);
             localStorage.setItem('p0rtr8t_wallet', state.wallet);
             localStorage.setItem('p0rtr8t_entryNum', state.entryNum);
-            localStorage.setItem('p0rtr8t_img', state.selectedImg);
+            localStorage.setItem('p0rtr8t_customCard', state.selectedCustomCard);
 
             renderPremiumCard();
             switchView('viewCard');
@@ -556,104 +563,13 @@
             const canvas = document.getElementById('resultCanvas');
             const ctx = canvas.getContext('2d');
 
-            let gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-            gradient.addColorStop(0, '#ffd6e0');   
-            gradient.addColorStop(0.5, '#fbf7db'); 
-            gradient.addColorStop(1, '#cecfe2');   
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
-            ctx.lineWidth = 3;
-            for(let i = -canvas.width; i < canvas.width; i += 40) {
-                ctx.beginPath();
-                ctx.moveTo(i, 0);
-                ctx.lineTo(i + canvas.height, canvas.height);
-                ctx.stroke();
-            }
-
-            ctx.strokeStyle = '#000000';
-            ctx.lineWidth = 6;
-            ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
-
-            ctx.lineWidth = 2;
-            ctx.strokeRect(28, 28, canvas.width - 56, canvas.height - 56);
-
-            ctx.fillStyle = '#000000';
-            ctx.font = "normal 38px 'Delius', sans-serif";
-            ctx.textAlign = "center";
-            ctx.fillText("P0RTR8T", canvas.width / 2, 85);
-
-            const imgObj = new Image();
-            imgObj.crossOrigin = "anonymous";
-            imgObj.src = state.selectedImg;
-            imgObj.onload = function() {
-                const rectX = canvas.width / 2 - 160;
-                const rectY = 140;
-                const rectW = 320;
-                const rectH = 320;
-                const radius = 24;
-
-                ctx.save();
-                ctx.beginPath();
-                ctx.moveTo(rectX + radius, rectY);
-                ctx.lineTo(rectX + rectW - radius, rectY);
-                ctx.quadraticCurveTo(rectX + rectW, rectY, rectX + rectW, rectY + radius);
-                ctx.lineTo(rectX + rectW, rectY + rectH - radius);
-                ctx.quadraticCurveTo(rectX + rectW, rectY + rectH, rectX + rectW - radius, rectY + rectH);
-                ctx.lineTo(rectX + radius, rectY + rectH);
-                ctx.quadraticCurveTo(rectX, rectY + rectH, rectX, rectY + rectH - radius);
-                ctx.lineTo(rectX, rectY + radius);
-                ctx.quadraticCurveTo(rectX, rectY, rectX + radius, rectY);
-                ctx.closePath();
-                ctx.clip();
-                
-                ctx.drawImage(imgObj, rectX, rectY, rectW, rectH);
-                ctx.restore();
-
-                ctx.strokeStyle = '#000000';
-                ctx.lineWidth = 4;
-                ctx.beginPath();
-                ctx.moveTo(rectX + radius, rectY);
-                ctx.lineTo(rectX + rectW - radius, rectY);
-                ctx.quadraticCurveTo(rectX + rectW, rectY, rectX + rectW, rectY + radius);
-                ctx.lineTo(rectX + rectW, rectY + rectH - radius);
-                ctx.quadraticCurveTo(rectX + rectW, rectY + rectH, rectX + rectW - radius, rectY + rectH);
-                ctx.lineTo(rectX + radius, rectY + rectH);
-                ctx.quadraticCurveTo(rectX, rectY + rectH, rectX, rectY + rectH - radius);
-                ctx.lineTo(rectX, rectY + radius);
-                ctx.quadraticCurveTo(rectX, rectY, rectX + radius, rectY);
-                ctx.closePath();
-                ctx.stroke();
-
-                drawCardTextAndStamp(ctx, canvas);
+            const cardImgObj = new Image();
+            cardImgObj.crossOrigin = "anonymous";
+            cardImgObj.src = state.selectedCustomCard;
+            cardImgObj.onload = function() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(cardImgObj, 0, 0, canvas.width, canvas.height);
             };
-        }
-
-        function drawCardTextAndStamp(ctx, canvas) {
-            ctx.fillStyle = '#000000';
-            ctx.font = "normal 32px 'Delius', sans-serif";
-            ctx.textAlign = "center";
-            ctx.fillText("@" + state.username, canvas.width / 2, 540);
-
-            ctx.save();
-            ctx.translate(canvas.width / 2, 650);
-            ctx.rotate(-0.08);
-            ctx.strokeStyle = '#000000';
-            ctx.lineWidth = 4;
-            ctx.strokeRect(-110, -35, 220, 70);
-            
-            ctx.fillStyle = '#000000';
-            ctx.font = "normal 30px 'Delius', sans-serif";
-            ctx.fillText("VERIFIED", 0, 10);
-            ctx.restore();
-
-            ctx.font = "normal 24px 'Delius', sans-serif";
-            ctx.textAlign = "left";
-            ctx.fillText("Supply: 333", 55, canvas.height - 65);
-            
-            ctx.textAlign = "right";
-            ctx.fillText("Ethereum", canvas.width - 55, canvas.height - 65);
         }
 
         function shareOnX() {
