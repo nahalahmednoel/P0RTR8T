@@ -3,597 +3,379 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P0RTR8T Whitelist</title>
+    <title>P0RTR8T</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Delius&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Kavivanar&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg-color: #faf8f5;
-            --primary: #000000;
-            --secondary: #ffffff;
-            --font-fine: 'Delius', cursive;
+            --bg-base: #faf7f2;
+            --card-bg: #ffffff;
+            --text-color: #111111;
+            --border-main: 2px solid #111111;
+            --shadow-subtle: 0 12px 24px rgba(17, 17, 17, 0.04), 0 4px 8px rgba(17, 17, 17, 0.02);
+            --font-handwritten: 'Kavivanar', cursive, sans-serif;
+            --font-sans: 'Inter', sans-serif;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: var(--font-fine);
-            color: var(--primary);
-            -webkit-font-smoothing: antialiased;
         }
 
         body {
-            background-color: var(--bg-color);
-            overflow-x: hidden;
+            font-family: var(--font-handwritten);
+            color: var(--text-color);
             min-height: 100vh;
+            background-color: var(--bg-base);
+            background-image: radial-gradient(circle at 15% 15%, rgba(255, 211, 182, 0.12) 0%, transparent 50%),
+                            radial-gradient(circle at 85% 85%, rgba(168, 230, 207, 0.1) 0%, transparent 50%);
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-        }
-
-        .bg-layer {
-            position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            pointer-events: none;
-            z-index: 1;
-            opacity: 0.25;
+            align-items: center;
+            padding: 20px;
             overflow: hidden;
-        }
-
-        .bg-layer-2 {
-            opacity: 0.15;
-            animation-duration: 35s;
-            transform: scale(0.8);
-        }
-
-        .floating-avatar {
-            position: absolute;
-            width: 65px;
-            height: 65px;
-            border-radius: 20px;
-            border: 2px solid var(--primary);
-            background-size: cover;
-            background-position: center;
-            box-shadow: 2px 2px 0px var(--primary);
-            animation: moveDiagonal 22s linear infinite;
-        }
-
-        @keyframes moveDiagonal {
-            0% { transform: translate(75vw, -20vh) rotate(0deg); }
-            100% { transform: translate(-20vw, 110vh) rotate(360deg); }
-        }
-
-        .app-container {
             position: relative;
-            z-index: 10;
-            width: 100%;
-            max-width: 460px;
-            padding: 24px;
-            margin: 40px auto;
         }
 
-        .card-view {
-            background: var(--secondary);
-            border: 2px solid var(--primary);
-            border-radius: 32px;
-            padding: 40px 30px;
-            box-shadow: 6px 6px 0px var(--primary);
-            transition: all 0.4s ease;
+        .container {
+            width: 100%;
+            max-width: 440px;
+            z-index: 10;
+            position: relative;
+        }
+
+        .base-card {
+            background: var(--card-bg);
+            border: var(--border-main);
+            border-radius: 28px;
+            padding: 45px 30px;
+            box-shadow: var(--shadow-subtle);
             text-align: center;
         }
 
-        .hidden {
-            display: none !important;
+        #announcement-view {
+            display: block;
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
-        h1.logo {
-            font-size: 3rem;
-            letter-spacing: 6px;
-            margin-bottom: 4px;
+        #announcement-view.fade-out {
+            opacity: 0;
+            transform: scale(0.96);
+        }
+
+        #countdown-view {
+            display: none;
+            opacity: 0;
+            transform: scale(1.02);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        #countdown-view.fade-in {
+            display: block;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        h1 {
+            font-size: 2.8rem;
             font-weight: 400;
+            line-height: 1.2;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
         }
 
         .subtitle {
-            font-size: 1.1rem;
-            opacity: 0.7;
-            margin-bottom: 30px;
-        }
-
-        .welcome-text {
-            font-size: 1.05rem;
-            line-height: 1.6;
-            margin-bottom: 35px;
-        }
-
-        .btn {
-            background: var(--secondary);
-            border: 2px solid var(--primary);
-            padding: 14px 32px;
             font-size: 1.2rem;
+            opacity: 0.75;
+            line-height: 1.5;
+            margin-bottom: 5px;
+        }
+
+        .timer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 30px 0 35px 0;
+            font-family: var(--font-sans);
+        }
+
+        .timer-block {
+            background: #faf7f2;
+            border: 1.5px solid rgba(17, 17, 17, 0.15);
             border-radius: 16px;
-            cursor: pointer;
-            box-shadow: 4px 4px 0px var(--primary);
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            padding: 12px 5px;
+        }
+
+        .timer-val {
+            font-size: 1.8rem;
+            font-weight: 600;
+            display: block;
+            line-height: 1.1;
+        }
+
+        .timer-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.6;
+            margin-top: 2px;
+        }
+
+        .schedule-container {
+            position: relative;
+            height: 75px;
             width: 100%;
-            text-decoration: none;
+            margin-top: 15px;
         }
 
-        .btn:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0px var(--primary);
-        }
-
-        .btn:disabled {
-            background: #f0f0f0;
-            border-color: #888888;
-            color: #888888;
-            box-shadow: none;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .task-list {
-            text-align: left;
-            margin-top: 20px;
-        }
-
-        .task-item {
-            background: #ffffff;
-            border: 2px solid var(--primary);
-            border-radius: 20px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-
-        .task-header {
+        .schedule-card {
+            position: absolute;
+            top: 0; left: 0; width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 8px;
+            background: var(--card-bg);
+            border: var(--border-main);
+            border-radius: 18px;
+            padding: 16px 24px;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 0 #111111;
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.95);
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
 
-        .task-title {
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .schedule-card.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1);
         }
 
-        .status-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            border: 2px solid var(--primary);
-            background: #ffffff;
+        .schedule-card.fall {
+            animation: cardDropOff 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
 
-        .status-dot.done {
-            background: #000000;
-        }
-
-        .task-expanded {
-            margin-top: 15px;
-            border-top: 1px dashed #000000;
-            padding-top: 15px;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid var(--primary);
-            border-radius: 12px;
+        .utc-badge {
+            font-family: var(--font-sans);
             font-size: 1rem;
-            background: #ffffff;
-            outline: none;
-            margin-bottom: 12px;
+            background: #111111;
+            color: #ffffff;
+            padding: 2px 10px;
+            border-radius: 8px;
         }
 
-        .mini-btn {
-            padding: 8px 18px;
-            font-size: 0.95rem;
-            border-radius: 10px;
-            box-shadow: 2px 2px 0px var(--primary);
-            width: auto;
+        body.active-screen-glitch {
+            animation: shakeCanvas 0.1s infinite alternate;
         }
 
-        .loader-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            padding: 20px 0;
+        body.active-screen-glitch::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(rgba(11,11,11,0) 0px, rgba(11,11,11,0) 2px, rgba(11,11,11,0.06) 3px, rgba(11,11,11,0.06) 5px),
+                        linear-gradient(90deg, rgba(255,0,0,0.04), rgba(0,255,0,0.02), rgba(0,0,255,0.04));
+            pointer-events: none;
+            z-index: 10000;
         }
 
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        body.active-screen-glitch .base-card {
+            animation: cardDistort 0.15s infinite alternate steps(2);
+            position: relative;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        body.active-screen-glitch .base-card::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(17, 17, 17, 0.02);
+            mix-blend-mode: exclusion;
+            pointer-events: none;
+            animation: flashOverlays 0.1s infinite alternate;
         }
 
-        .error-msg {
-            color: #ff0000;
-            font-size: 0.9rem;
-            margin-top: -6px;
-            margin-bottom: 10px;
-            text-align: left;
+        @keyframes shakeCanvas {
+            0% { transform: translate(4px, 3px) rotate(0.5deg); }
+            20% { transform: translate(-3px, -2px) rotate(-1deg); }
+            40% { transform: translate(-5px, 1px) rotate(1deg); }
+            60% { transform: translate(3px, 4px) rotate(0deg); }
+            80% { transform: translate(-2px, -3px) rotate(1deg); }
+            100% { transform: translate(5px, 2px) rotate(-0.5deg); }
         }
 
-        #canvasContainer {
-            margin: 20px auto;
-            max-width: 100%;
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        @keyframes cardDistort {
+            0% { transform: skewX(-4deg) scale(0.98); box-shadow: 6px 0 0 rgba(255,0,0,0.4), -6px 0 0 rgba(0,0,255,0.4); }
+            100% { transform: skewX(4deg) scale(1.02); box-shadow: -5px 0 0 rgba(255,0,0,0.3), 5px 0 0 rgba(0,255,0,0.4); filter: hue-rotate(45deg); }
         }
 
-        #resultCanvas {
-            width: 100%;
-            height: auto;
-            display: block;
+        @keyframes flashOverlays {
+            0% { clip-path: inset(10% 0 80% 0); }
+            100% { clip-path: inset(70% 0 5% 0); }
         }
 
-        .share-actions {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-            margin-top: 25px;
+        @keyframes cardDropOff {
+            0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+            100% { opacity: 0; transform: translateY(220px) rotate(12deg); }
+        }
+
+        @media(max-width: 480px) {
+            .base-card { padding: 35px 20px; }
+            h1 { font-size: 2.3rem; }
+            .timer-val { font-size: 1.5rem; }
+            .schedule-card { padding: 14px 18px; font-size: 1.1rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="bg-layer" id="bgLayer1"></div>
-    <div class="bg-layer bg-layer-2" id="bgLayer2"></div>
-
-    <div class="app-container">
+    <div class="container">
         
-        <div id="viewLanding" class="card-view">
-            <h1 class="logo">P0RTR8T</h1>
-            <div class="subtitle">333 Unique Portraits On Ethereum</div>
-            <p class="welcome-text">
-                Welcome to the collection space. Entry guarantees processing inside our dynamic collectible directory. Complete your setup items to print your verified access ticket.
-            </p>
-            <button class="btn" onclick="switchView('viewTasks')">Join Whitelist</button>
+        <div class="base-card" id="announcement-view">
+            <h1>Whitelist Closed</h1>
+            <p class="subtitle">Thank you to everyone who joined PORTR8T. The whitelist campaign has officially ended.</p>
         </div>
 
-        <div id="viewTasks" class="card-view hidden">
-            <h1 class="logo" style="font-size: 2rem;">TASKS</h1>
-            <div class="subtitle" style="margin-bottom: 20px;">Complete all milestones</div>
+        <div class="base-card" id="countdown-view">
+            <h1>Mint Starts In</h1>
             
-            <div class="task-list">
-                <div class="task-item" id="task1">
-                    <div class="task-header">
-                        <div class="task-title"><span class="status-dot" id="dot1"></span> 1. Follow on X</div>
-                        <button class="btn mini-btn" id="btnAction1" onclick="handleTask1Action()">Follow</button>
-                    </div>
-                    <div class="task-expanded hidden" id="exp1">
-                        <input type="text" id="inputXUser" placeholder="Enter your X username">
-                        <button class="btn mini-btn" onclick="submitTask1()">Submit Username</button>
-                    </div>
-                    <div class="task-expanded hidden" id="load1">
-                        <div class="loader-container"><div class="spinner"></div><p>Checking Follow...</p></div>
-                    </div>
+            <div class="timer-grid">
+                <div class="timer-block">
+                    <span class="timer-val" id="val-days">00</span>
+                    <span class="timer-label">Days</span>
                 </div>
-
-                <div class="task-item" id="task2">
-                    <div class="task-header">
-                        <div class="task-title"><span class="status-dot" id="dot2"></span> 2. Like Post</div>
-                        <button class="btn mini-btn" id="btnAction2" onclick="completeTask2()" disabled>Like</button>
-                    </div>
+                <div class="timer-block">
+                    <span class="timer-val" id="val-hours">00</span>
+                    <span class="timer-label">Hours</span>
                 </div>
-
-                <div class="task-item" id="task3">
-                    <div class="task-header">
-                        <div class="task-title"><span class="status-dot" id="dot3"></span> 3. Repost Post</div>
-                        <button class="btn mini-btn" id="btnAction3" onclick="completeTask3()" disabled>Repost</button>
-                    </div>
+                <div class="timer-block">
+                    <span class="timer-val" id="val-mins">00</span>
+                    <span class="timer-label">Mins</span>
                 </div>
-
-                <div class="task-item" id="task4">
-                    <div class="task-header">
-                        <div class="task-title"><span class="status-dot" id="dot4"></span> 4. Comment On Post</div>
-                        <button class="btn mini-btn" id="btnAction4" onclick="handleTask4Action()" disabled>Comment</button>
-                    </div>
-                    <div class="task-expanded hidden" id="exp4">
-                        <input type="text" id="inputXComment" placeholder="https://x.com/.../status/...">
-                        <div class="error-msg hidden" id="err4">Please enter a valid x.com comment link.</div>
-                        <button class="btn mini-btn" onclick="submitTask4()">Verify Comment</button>
-                    </div>
-                    <div class="task-expanded hidden" id="load4">
-                        <div class="loader-container"><div class="spinner"></div><p>Verifying submission context...</p></div>
-                    </div>
+                <div class="timer-block">
+                    <span class="timer-val" id="val-secs">00</span>
+                    <span class="timer-label">Secs</span>
                 </div>
             </div>
 
-            <div id="walletSection" class="hidden" style="margin-top: 25px; border-top: 2px solid var(--primary); padding-top: 20px;">
-                <input type="text" id="inputWallet" placeholder="0x...">
-                <div class="error-msg hidden" id="errWallet">Please input a correct Ethereum structural wallet layout.</div>
-                <button class="btn" id="btnWalletVerify" onclick="processWalletVerification()">Verify Wallet</button>
-            </div>
-        </div>
-
-        <div id="viewLoading" class="card-view hidden">
-            <div class="loader-container" style="padding: 40px 0;">
-                <div class="spinner" style="width: 60px; height: 60px;"></div>
-                <h2 style="font-weight: 400; margin-top: 15px;">Validating Credentials</h2>
-                <p style="opacity: 0.7;">Securing your slot across distribution logs...</p>
-            </div>
-        </div>
-
-        <div id="viewCard" class="card-view hidden">
-            <h1 class="logo" style="font-size: 2.2rem;">COLLECTIBLE</h1>
-            <div class="subtitle" style="margin-bottom: 15px;">Your verified slot access key</div>
-            
-            <div id="canvasContainer">
-                <canvas id="resultCanvas" width="600" height="840"></canvas>
-            </div>
-
-            <div class="share-actions">
-                <button class="btn" onclick="shareOnX()">Share On X</button>
-                <button class="btn" onclick="downloadCard()">Download Card</button>
-                <button class="btn" onclick="copyCard()">Copy Card Image</button>
+            <div class="schedule-container" id="schedule-box">
+                <div class="schedule-card" id="card-0">
+                    <span>Treasury</span>
+                    <span class="utc-badge">13:00 UTC</span>
+                </div>
+                <div class="schedule-card" id="card-1">
+                    <span>GTD</span>
+                    <span class="utc-badge">14:00 UTC</span>
+                </div>
+                <div class="schedule-card" id="card-2">
+                    <span>FCFS</span>
+                    <span class="utc-badge">15:00 UTC</span>
+                </div>
+                <div class="schedule-card" id="card-3">
+                    <span>PUBLIC</span>
+                    <span class="utc-badge">16:00 UTC</span>
+                </div>
             </div>
         </div>
 
     </div>
 
     <script>
-        const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbw0o5MXtnTFPkH0xsHh0I7L-ZUvefD6zQGPIvSiAWwEOYAxba_Sf13qPtX8NTXbaPHpCg/exec";
+        const cardNotice = document.getElementById('announcement-view');
+        const cardMint = document.getElementById('countdown-view');
+        const bodyNode = document.body;
 
-        const nftImages = [
-            "https://i.ibb.co.com/5XzwpMMS/42.jpg",
-            "https://i.ibb.co.com/S4NdcHgT/33.jpg",
-            "https://i.ibb.co.com/q3vWkJTG/54.jpg",
-            "https://i.ibb.co.com/mCGHVLDq/36.jpg",
-            "https://i.ibb.co.com/1txMNzTN/140.jpg",
-            "https://i.ibb.co.com/4RtNYtLY/162.jpg",
-            "https://i.ibb.co.com/4ZCsgfqR/149.jpg"
-        ];
+        const timeDays = document.getElementById('val-days');
+        const timeHours = document.getElementById('val-hours');
+        const timeMins = document.getElementById('val-mins');
+        const timeSecs = document.getElementById('val-secs');
 
-        const customCards = [
-            "https://i.ibb.co.com/h1gtTY3P/FARU2.jpg",
-            "https://i.ibb.co.com/Kxkc8j36/FARU1.jpg"
-        ];
+        const targetMintDate = Date.UTC(2026, 5, 27, 13, 0, 0);
 
-        let state = {
-            username: "",
-            commentUrl: "",
-            wallet: "",
-            task1Done: false,
-            task2Done: false,
-            task3Done: false,
-            task4Done: false,
-            entryNum: "001",
-            selectedImg: "",
-            selectedCustomCard: ""
-        };
+        function updateCountdownTimer() {
+            const now = new Date().getTime();
+            const gap = targetMintDate - now;
 
-        function initBackground() {
-            const layers = [document.getElementById('bgLayer1'), document.getElementById('bgLayer2')];
-            layers.forEach((layer, lIdx) => {
-                const count = lIdx === 0 ? 12 : 8;
-                for(let i=0; i<count; i++) {
-                    let avatar = document.createElement('div');
-                    avatar.className = 'floating-avatar';
-                    avatar.style.top = Math.random() * 100 + "vh";
-                    avatar.style.left = Math.random() * 100 + "vw";
-                    avatar.style.animationDelay = (Math.random() * -20) + "s";
-                    
-                    const randomImg = nftImages[Math.floor(Math.random() * nftImages.length)];
-                    avatar.style.backgroundImage = `url('${randomImg}')`;
-                    layer.appendChild(avatar);
-                }
-            });
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            initBackground();
-            state.selectedImg = nftImages[Math.floor(Math.random() * nftImages.length)];
-            state.selectedCustomCard = customCards[Math.floor(Math.random() * customCards.length)];
-            checkLocalStorage();
-        });
-
-        function switchView(viewId) {
-            ['viewLanding', 'viewTasks', 'viewLoading', 'viewCard'].forEach(id => {
-                document.getElementById(id).classList.add('hidden');
-            });
-            document.getElementById(viewId).classList.remove('hidden');
-        }
-
-        function checkLocalStorage() {
-            if (localStorage.getItem('p0rtr8t_registered') === 'true') {
-                state.username = localStorage.getItem('p0rtr8t_username') || "User";
-                state.wallet = localStorage.getItem('p0rtr8t_wallet') || "0x00";
-                state.entryNum = localStorage.getItem('p0rtr8t_entryNum') || "001";
-                state.selectedCustomCard = localStorage.getItem('p0rtr8t_customCard') || customCards[0];
-                renderPremiumCard();
-                switchView('viewCard');
-            }
-        }
-
-        function handleTask1Action() {
-            window.open('https://x.com/P0RTR8T', '_blank');
-            document.getElementById('exp1').classList.remove('hidden');
-            document.getElementById('btnAction1').classList.add('hidden');
-        }
-
-        function submitTask1() {
-            const user = document.getElementById('inputXUser').value.trim();
-            if(!user) return;
-            state.username = user.replace('@', '');
-            document.getElementById('exp1').classList.add('hidden');
-            document.getElementById('load1').classList.remove('hidden');
-            
-            setTimeout(() => {
-                document.getElementById('load1').classList.add('hidden');
-                state.task1Done = true;
-                document.getElementById('dot1').classList.add('done');
-                document.getElementById('btnAction2').disabled = false;
-            }, 2000);
-        }
-
-        function completeTask2() {
-            if(!state.task1Done) return;
-            window.open('https://x.com/P0RTR8T/status/2068225349402648842', '_blank');
-            state.task2Done = true;
-            document.getElementById('dot2').classList.add('done');
-            document.getElementById('btnAction2').disabled = true;
-            document.getElementById('btnAction3').disabled = false;
-        }
-
-        function completeTask3() {
-            if(!state.task2Done) return;
-            window.open('https://x.com/P0RTR8T/status/2068225349402648842', '_blank');
-            state.task3Done = true;
-            document.getElementById('dot3').classList.add('done');
-            document.getElementById('btnAction3').disabled = true;
-            document.getElementById('btnAction4').disabled = false;
-        }
-
-        function handleTask4Action() {
-            if(!state.task3Done) return;
-            window.open('https://x.com/P0RTR8T/status/2068225349402648842', '_blank');
-            document.getElementById('exp4').classList.remove('hidden');
-        }
-
-        function submitTask4() {
-            const url = document.getElementById('inputXComment').value.trim();
-            const regex = /^(https?:\/\/)?(www\.)?(x|twitter)\.com\/[a-zA-Z0-9_]+\/status\/[0-9]+/;
-            
-            if(!regex.test(url)) {
-                document.getElementById('err4').classList.remove('hidden');
+            if (gap <= 0) {
+                timeDays.innerText = "00";
+                timeHours.innerText = "00";
+                timeMins.innerText = "00";
+                timeSecs.innerText = "00";
                 return;
             }
-            document.getElementById('err4').classList.add('hidden');
-            document.getElementById('exp4').classList.add('hidden');
-            document.getElementById('load4').classList.remove('hidden');
+
+            const d = Math.floor(gap / (1000 * 60 * 60 * 24));
+            const h = Math.floor((gap % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((gap % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((gap % (1000 * 60)) / 1000);
+
+            timeDays.innerText = d < 10 ? "0" + d : d;
+            timeHours.innerText = h < 10 ? "0" + h : h;
+            timeMins.innerText = m < 10 ? "0" + m : m;
+            timeSecs.innerText = s < 10 ? "0" + s : s;
+        }
+
+        function triggerFinalGlitchAndRedirect() {
+            bodyNode.classList.add('active-screen-glitch');
+            
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 300, 100, 400, 100, 300, 100, 400]);
+            }
 
             setTimeout(() => {
-                document.getElementById('load4').classList.add('hidden');
-                state.task4Done = true;
-                state.commentUrl = url;
-                document.getElementById('dot4').classList.add('done');
-                document.getElementById('btnAction4').classList.add('hidden');
-                document.getElementById('walletSection').classList.remove('hidden');
+                if (navigator.vibrate) {
+                    navigator.vibrate(0);
+                }
+                window.location.href = "https://opensea.io/collection/p0rtr8t/overview";
             }, 2500);
         }
 
-        function processWalletVerification() {
-            if(!(state.task1Done && state.task2Done && state.task3Done && state.task4Done)) return;
-            
-            const walletInput = document.getElementById('inputWallet').value.trim();
-            const ethRegex = /^0x[a-fA-F0-9]{40}$/;
+        function runScheduleSequence() {
+            let index = 0;
+            const totalPhases = 4;
 
-            if(!ethRegex.test(walletInput)) {
-                document.getElementById('errWallet').classList.remove('hidden');
-                return;
+            function cyclePhase() {
+                if (index >= totalPhases) {
+                    setTimeout(triggerFinalGlitchAndRedirect, 1000);
+                    return;
+                }
+
+                const currentCard = document.getElementById("card-" + index);
+                currentCard.classList.add('visible');
+
+                setTimeout(() => {
+                    currentCard.classList.remove('visible');
+                    currentCard.classList.add('fall');
+                    
+                    index++;
+                    setTimeout(cyclePhase, 400);
+
+                }, 2000);
             }
-            document.getElementById('errWallet').classList.add('hidden');
-            state.wallet = walletInput;
-            
-            switchView('viewLoading');
-            sendDataToGoogleSheets();
+
+            cyclePhase();
         }
 
-        window.handleSheetsResponse = function(resData) {
-            const oldScript = document.getElementById('sheetsJsonpTag');
-            if (oldScript) oldScript.remove();
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                cardNotice.classList.add('fade-out');
 
-            if (resData.status === "duplicate") {
-                alert("Submission Rejected: This Username or Wallet Address is already registered.");
-                switchView('viewTasks');
-            } else if (resData.status === "success") {
-                state.entryNum = resData.entry; 
-                finalizeSubmission();
-            } else {
-                alert("Submission could not be logged. Please try again.");
-                switchView('viewTasks');
-            }
-        };
+                setTimeout(() => {
+                    cardNotice.style.display = 'none';
+                    cardMint.classList.add('fade-in');
+                    
+                    updateCountdownTimer();
+                    setInterval(updateCountdownTimer, 1000);
+                    
+                    runScheduleSequence();
 
-        function sendDataToGoogleSheets() {
-            const urlString = GOOGLE_SCRIPT_API_URL + 
-                "?callback=handleSheetsResponse" +
-                "&username=" + encodeURIComponent(state.username) +
-                "&wallet=" + encodeURIComponent(state.wallet) +
-                "&commentUrl=" + encodeURIComponent(state.commentUrl);
+                }, 400);
 
-            const script = document.createElement('script');
-            script.id = 'sheetsJsonpTag';
-            script.src = urlString;
-            
-            script.onerror = function() {
-                alert("Network verification channel timeout. Standard entry profile assigned.");
-                state.entryNum = "001";
-                finalizeSubmission();
-            };
-
-            document.body.appendChild(script);
-        }
-
-        function finalizeSubmission() {
-            localStorage.setItem('p0rtr8t_registered', 'true');
-            localStorage.setItem('p0rtr8t_username', state.username);
-            localStorage.setItem('p0rtr8t_wallet', state.wallet);
-            localStorage.setItem('p0rtr8t_entryNum', state.entryNum);
-            localStorage.setItem('p0rtr8t_customCard', state.selectedCustomCard);
-
-            renderPremiumCard();
-            switchView('viewCard');
-        }
-
-        function renderPremiumCard() {
-            const canvas = document.getElementById('resultCanvas');
-            const ctx = canvas.getContext('2d');
-
-            const cardImgObj = new Image();
-            cardImgObj.crossOrigin = "anonymous";
-            cardImgObj.src = state.selectedCustomCard;
-            cardImgObj.onload = function() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(cardImgObj, 0, 0, canvas.width, canvas.height);
-            };
-        }
-
-        function shareOnX() {
-            const rawMessage = `Joined @P0RTR8T whitelist.\n\nGrab yours: portr8t.xyz`;
-            window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(rawMessage)}`, '_blank');
-        }
-
-        function downloadCard() {
-            const canvas = document.getElementById('resultCanvas');
-            const link = document.createElement('a');
-            link.download = `P0RTR8T_Collectible.png`;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        }
-
-        function copyCard() {
-            const canvas = document.getElementById('resultCanvas');
-            canvas.toBlob(blob => {
-                navigator.clipboard.write([
-                    new ClipboardItem({ "image/png": blob })
-                ]).then(() => alert("Premium trading card copied to clipboard!"))
-                  .catch(() => alert("Copying failed. Please download the card instead."));
-            }, 'image/png');
-        }
+            }, 2000);
+        });
     </script>
 </body>
 </html>
